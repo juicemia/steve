@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/spf13/cobra/cobra/cmd"
+	"github.com/juicemia/steve/cmd"
 	"gopkg.in/russross/blackfriday.v2"
 )
 
