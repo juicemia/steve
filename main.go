@@ -5,10 +5,15 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/spf13/cobra/cobra/cmd"
 	"gopkg.in/russross/blackfriday.v2"
 )
 
 func main() {
+	cmd.Execute()
+}
+
+func generateBasic() {
 	fmt.Println("building site at test-blog/")
 
 	f, err := os.Open("./test-blog/test.md")
