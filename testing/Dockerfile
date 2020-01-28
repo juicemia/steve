@@ -7,6 +7,12 @@ RUN apt-get update && apt-get install -y git
 
 # This will be the directory where the test repository is. To prevent issues with Git on the host
 # it's being added instead of mounted as a volume.
-ADD . /www
+ADD test-blog /www
 WORKDIR /www
+
+RUN git init && \
+	git config --global user.name "test" && \
+	git config --global user.email "test@test" && \
+	git add . && \
+	git commit -m "Initial commit"
 
