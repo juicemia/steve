@@ -20,7 +20,14 @@ var newCmd = &cobra.Command{
 	Short: "Create a new blog post",
 	Long: `Create a new blog post.
 
-TODO: update this documentation to give more technical details.`,
+Creating a new blog post is more than just generating a Markdown file.
+
+Steve handles tracking of changes for you using Git as its backend. Creating a
+new post creates a Git branch that tracks those changes as well.
+
+If there is already a Markdown file at the specified path, Steve will overwrite
+it. Because paths are used for more than just creating the file, they are
+specified without the ".md" extension.`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) < 1 {
 			return errors.New("missing parameter for file name")
