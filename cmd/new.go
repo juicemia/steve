@@ -51,7 +51,7 @@ TODO: update this documentation to give more technical details.`,
 		worktree.Checkout(&git.CheckoutOptions{
 			Create: true,
 			Force: false,
-			Branch: plumbing.ReferenceName("refs/heads/post/new-post-test"),
+			Branch: plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", args[0])),
 		})
 		if err != nil {
 			print.Fatalf("error creating new branch for post: %v\n", err)
