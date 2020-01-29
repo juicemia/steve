@@ -26,8 +26,6 @@ TODO: update this documentation to give more technical details.`,
 			return errors.New("missing parameter for file name")
 		}
 
-		// TODO: check if file exists here
-
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
@@ -59,11 +57,13 @@ TODO: update this documentation to give more technical details.`,
 			print.Fatalf("error creating new branch for post: %v\n", err)
 		}
 
-		// create file
 		print.Verboseln("creating markdown file...")
-		_, err = os.Create(fmt.Sprintf("%s/%s.md", wd, args[0]))
+		path := fmt.Sprintf("%s/%s.md", wd, args[0])
+		file, err := os.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
 		if err != nil {
 			print.Fatalf("error creating markdown file: %v\n", err)
 		}
+
+		fmt.Fprintln(file, "# Title")
 	},
 }
