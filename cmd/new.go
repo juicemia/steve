@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"errors"
 
 	"github.com/spf13/cobra"
 	git "gopkg.in/src-d/go-git.v4"
@@ -15,11 +16,20 @@ func init() {
 }
 
 var newCmd = &cobra.Command{
-	Use:   "new",
+	Use:   "new FILENAME",
 	Short: "Create a new blog post",
 	Long: `Create a new blog post.
 
 TODO: update this documentation to give more technical details.`,
+	Args: func(cmd *cobra.Command, args []string) error {
+		if len(args) < 1 {
+			return errors.New("missing parameter for file name")
+		}
+
+		// TODO: check if file exists here
+
+		return nil
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		print.Verboseln("generating new post...")
 
@@ -51,7 +61,7 @@ TODO: update this documentation to give more technical details.`,
 
 		// create file
 		print.Verboseln("creating markdown file...")
-		_, err = os.Create(fmt.Sprintf("%s/test-blog/blog/new-post-test.md", wd))
+		_, err = os.Create(fmt.Sprintf("%s/%s.md", wd, args[0]))
 		if err != nil {
 			print.Fatalf("error creating markdown file: %v\n", err)
 		}
