@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+	"github.com/juicemia/steve/print"
 )
 
 var rootCmd = &cobra.Command{
@@ -21,4 +22,14 @@ func Execute() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+}
+
+func init() {
+	rootCmd.PersistentFlags().BoolVarP(
+		&print.VerboseEnabled,
+		"verbose",
+		"v",
+		false,
+		"enable verbose output",
+	)
 }
