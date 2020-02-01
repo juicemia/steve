@@ -3,12 +3,12 @@
 # Run it with `docker run -it --rm -v $(pwd)/build/steve:/bin/steve steve-testing`.
 FROM ubuntu:18.04
 
-RUN apt-get update && apt-get install -y git
+RUN apt-get update && apt-get install -y git tree
 
 # This will be the directory where the test repository is. To prevent issues with Git on the host
 # it's being added instead of mounted as a volume.
-ADD test-blog /www
-WORKDIR /www
+ADD test-blog /workspace
+WORKDIR /workspace
 
 RUN git init && \
 	git config --global user.name "test" && \
