@@ -6,17 +6,27 @@ import (
 	"fmt"
 	"path/filepath"
 	"strings"
+	"text/template"
 
 	"github.com/spf13/cobra"
 	"github.com/juicemia/steve/print"
 	"gopkg.in/russross/blackfriday.v2"
 )
 
+type PageContext struct {
+	Content string
+}
+
 func init() {
 	rootCmd.AddCommand(newBuildCmd())
 }
 
 func newBuildCmd() *cobra.Command {
+	tmpl, err := template.ParseFiles("template/site-content.tpl.html")
+	if err != nil {
+		print.Fatalf("error reading template file: %v\n", err)
+	}
+
 	var srcDir string
 
 	var walkFn filepath.WalkFunc
@@ -53,8 +63,9 @@ func newBuildCmd() *cobra.Command {
 			return err
 		}
 
-		output := blackfriday.Run(buf)
-
+		pctx := PageContext{
+			Content: string(blackfriday.Run(buf)),
+		}
 
 		outpath = strings.TrimSuffix(outpath, ".md")
 		outpath = outpath + ".html"
@@ -66,7 +77,10 @@ func newBuildCmd() *cobra.Command {
 				return fmt.Errorf("error generating %s: %v", outpath, err)
 			}
 
-			fmt.Fprintf(f, "%s\n", output)
+			err = tmpl.Execute(f, pctx)
+			if err != nil {
+				return fmt.Errorf("error executing template: %v\n", err)
+			}
 		}
 
 		return nil
