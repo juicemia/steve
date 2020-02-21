@@ -13,7 +13,11 @@ import (
 	"gopkg.in/russross/blackfriday.v2"
 )
 
-type PageContext struct {
+type Site struct {
+	Pages map[string]Page
+}
+
+type Page struct {
 	Content string
 }
 
@@ -28,6 +32,9 @@ func newBuildCmd() *cobra.Command {
 	}
 
 	var srcDir string
+	s := &Site{
+		Pages: make(map[string]Page),
+	}
 
 	var walkFn filepath.WalkFunc
 	walkFn = func(path string, info os.FileInfo, err error) error {
@@ -63,25 +70,14 @@ func newBuildCmd() *cobra.Command {
 			return err
 		}
 
-		pctx := PageContext{
+		page := Page{
 			Content: string(blackfriday.Run(buf)),
 		}
 
-		outpath = strings.TrimSuffix(outpath, ".md")
-		outpath = outpath + ".html"
+		key := strings.TrimPrefix(path, "site/")
+		s.Pages[key] = page
 
-		print.Verbosef("generating html file at %v...\n", outpath)
-		if _, err := os.Stat(outpath); os.IsNotExist(err) {
-			f, err := os.Create(outpath)
-			if err != nil {
-				return fmt.Errorf("error generating %s: %v", outpath, err)
-			}
-
-			err = tmpl.Execute(f, pctx)
-			if err != nil {
-				return fmt.Errorf("error executing template: %v\n", err)
-			}
-		}
+		fmt.Printf("site in walk fn: %+v\n", s)
 
 		return nil
 	}
@@ -107,6 +103,26 @@ func newBuildCmd() *cobra.Command {
 			err := filepath.Walk(srcDir, walkFn)
 			if err != nil {
 				print.Fatalln(err.Error())
+			}
+
+			fmt.Printf("pages: %+v\n", s.Pages)
+
+			for key, page := range s.Pages {
+				outpath := strings.TrimSuffix(key, ".md")
+				outpath = "www/" + outpath + ".html"
+
+				print.Verbosef("generating html file at %v...\n", outpath)
+				if _, err := os.Stat(outpath); os.IsNotExist(err) {
+					f, err := os.Create(outpath)
+					if err != nil {
+						print.Fatalf("error generating %s: %v", outpath, err)
+					}
+
+					err = tmpl.Execute(f, page)
+					if err != nil {
+						print.Fatalf("error executing template: %v\n", err)
+					}
+				}
 			}
 		},
 	}
