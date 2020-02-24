@@ -1,14 +1,14 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"os"
-	"errors"
 
+	"github.com/juicemia/steve/print"
 	"github.com/spf13/cobra"
 	git "gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing"
-	"github.com/juicemia/steve/print"
 )
 
 func init() {
@@ -57,7 +57,7 @@ specified without the ".md" extension.`,
 		print.Verboseln("creating backing branch...")
 		worktree.Checkout(&git.CheckoutOptions{
 			Create: true,
-			Force: false,
+			Force:  false,
 			Branch: plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", args[0])),
 		})
 		if err != nil {

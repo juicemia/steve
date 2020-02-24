@@ -1,21 +1,21 @@
 package cmd
 
 import (
-	"os"
-	"io/ioutil"
 	"fmt"
+	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
 	"text/template"
 
-	"github.com/spf13/cobra"
 	"github.com/juicemia/steve/print"
+	"github.com/spf13/cobra"
 	"gopkg.in/russross/blackfriday.v2"
 )
 
 type Site struct {
-	Pages map[string]Page
-	Links []string
+	Pages       map[string]Page
+	Links       []string
 	CurrentPage Page
 }
 
@@ -111,7 +111,7 @@ func newBuildCmd() *cobra.Command {
 			fmt.Printf("pages: %+v\n", s.Pages)
 
 			for outpath, page := range s.Pages {
-                outpath = "www/" + outpath
+				outpath = "www/" + outpath
 				print.Verbosef("generating html file at %v...\n", outpath)
 				if _, err := os.Stat(outpath); os.IsNotExist(err) {
 					f, err := os.Create(outpath)
@@ -140,21 +140,19 @@ func newBuildCmd() *cobra.Command {
 	return cmd
 }
 
-
 //func generateBasic() {
-	//fmt.Println("building site at test-blog/")
+//fmt.Println("building site at test-blog/")
 
-	//f, err := os.Open("./test-blog/test.md")
-	//if err != nil {
-		//panic(err)
-	//}
-
-	//buf, err := ioutil.ReadAll(f)
-	//if err != nil {
-		//panic(err)
-	//}
-
-	//output := blackfriday.Run(buf)
-	//fmt.Printf("\n\n%s\n", output)
+//f, err := os.Open("./test-blog/test.md")
+//if err != nil {
+//panic(err)
 //}
 
+//buf, err := ioutil.ReadAll(f)
+//if err != nil {
+//panic(err)
+//}
+
+//output := blackfriday.Run(buf)
+//fmt.Printf("\n\n%s\n", output)
+//}

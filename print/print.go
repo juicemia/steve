@@ -55,4 +55,3 @@ func Fatalf(msg string, args ...interface{}) {
 	fmt.Printf(msg, args...)
 	os.Exit(1)
 }
-
