@@ -21,9 +21,9 @@
                         </a>
 
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#">My Opinion About X</a>
-                            <a class="dropdown-item" href="#">My Opinion About Y</a>
-                            <a class="dropdown-item" href="#">My Opinion About Z</a>
+                            {{ range .Links }}
+                            <a class="dropdown-item" href="{{ . }}">My Opinion About X</a>
+                            {{ end }}
                         </div>
                     </li>
                 </ul>
@@ -33,7 +33,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-8">
-                    {{ .Content }}
+                    {{ .CurrentPage.Content }}
                 </div>
             </div>
         </div>

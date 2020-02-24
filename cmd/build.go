@@ -15,6 +15,8 @@ import (
 
 type Site struct {
 	Pages map[string]Page
+	Links []string
+	CurrentPage Page
 }
 
 type Page struct {
@@ -74,7 +76,8 @@ func newBuildCmd() *cobra.Command {
 			Content: string(blackfriday.Run(buf)),
 		}
 
-		key := strings.TrimPrefix(path, "site/")
+		key := strings.TrimSuffix(strings.TrimPrefix(path, "site/"), ".md") + ".html"
+		s.Links = append(s.Links, key)
 		s.Pages[key] = page
 
 		fmt.Printf("site in walk fn: %+v\n", s)
@@ -107,10 +110,8 @@ func newBuildCmd() *cobra.Command {
 
 			fmt.Printf("pages: %+v\n", s.Pages)
 
-			for key, page := range s.Pages {
-				outpath := strings.TrimSuffix(key, ".md")
-				outpath = "www/" + outpath + ".html"
-
+			for outpath, page := range s.Pages {
+                outpath = "www/" + outpath
 				print.Verbosef("generating html file at %v...\n", outpath)
 				if _, err := os.Stat(outpath); os.IsNotExist(err) {
 					f, err := os.Create(outpath)
@@ -118,7 +119,8 @@ func newBuildCmd() *cobra.Command {
 						print.Fatalf("error generating %s: %v", outpath, err)
 					}
 
-					err = tmpl.Execute(f, page)
+					s.CurrentPage = page
+					err = tmpl.Execute(f, s)
 					if err != nil {
 						print.Fatalf("error executing template: %v\n", err)
 					}
